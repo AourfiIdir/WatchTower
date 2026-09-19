@@ -1,0 +1,76 @@
+.placeholder-page {
+  max-width: 800px;
+}
+
+.placeholder-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.placeholder-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-icon svg {
+  width: 28px;
+  height: 28px;
+  color: var(--accent-light);
+}
+
+.placeholder-icon.danger {
+  background: var(--danger-dim);
+}
+
+.placeholder-icon.danger svg {
+  color: var(--danger);
+}
+
+.placeholder-icon.info {
+  background: var(--info-dim);
+}
+
+.placeholder-icon.info svg {
+  color: var(--info);
+}
+
+.placeholder-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.placeholder-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+  max-width: 440px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.placeholder-types {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.type-badge {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}

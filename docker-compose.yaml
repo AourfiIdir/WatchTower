@@ -1,0 +1,63 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: watchtower_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-idir}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-watchtower_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-idir} -d ${POSTGRES_DB:-watchtower_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: watchtower_backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in .env}
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        # ── Backend source ──
+        - action: rebuild
+          path: ./backend/src
+        - action: rebuild
+          path: ./backend/Cargo.toml
+        - action: rebuild
+          path: ./backend/Cargo.lock
+        - action: rebuild
+          path: ./backend/migrations
+        - action: rebuild
+          path: ./backend/.sqlx
+        - action: rebuild
+          path: ./backend/Dockerfile
+        # ── Frontend source ──
+        - action: rebuild
+          path: ./frontend/WatchTower_Gui/src
+        - action: rebuild
+          path: ./frontend/WatchTower_Gui/public
+        - action: rebuild
+          path: ./frontend/WatchTower_Gui/index.html
+        - action: rebuild
+          path: ./frontend/WatchTower_Gui/package.json
+        - action: rebuild
+          path: ./frontend/WatchTower_Gui/package-lock.json
+        - action: rebuild
+          path: ./frontend/WatchTower_Gui/vite.config.ts
+
+volumes:
+  pgdata:

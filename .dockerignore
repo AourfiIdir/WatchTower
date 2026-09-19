@@ -1,0 +1,8 @@
+**/node_modules
+frontend/WatchTower_Gui/dist
+backend/target
+.git
+.gitignore
+*.log
+.dockerignore
+README.md
