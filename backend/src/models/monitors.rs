@@ -13,6 +13,28 @@ pub enum MonitorType {
     Icmp,
 }
 
+#[derive(Debug, Serialize, Deserialize, sqlx::Type)]
+#[sqlx(type_name = "dns_record_type", rename_all = "UPPERCASE")]
+#[serde(rename_all = "UPPERCASE")]
+pub enum DnsRecordType {
+    A,
+    Aaaa,
+    Cname,
+    Mx,
+    Txt,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, sqlx::Type)]
+#[sqlx(type_name = "http_method", rename_all = "UPPERCASE")]
+#[serde(rename_all = "UPPERCASE")]
+pub enum HttpMethod {
+    Get,
+    Post,
+    Put,
+    Delete,
+    Head,
+}
+
 // Database representation (SQLx)
 #[derive(Debug, Serialize, Deserialize, FromRow)]
 pub struct Monitor {
@@ -22,11 +44,11 @@ pub struct Monitor {
     pub r#type: MonitorType,
     pub target: String,
     pub port: Option<i32>,
-    pub http_method: Option<String>,
+    pub http_method: Option<HttpMethod>,
     pub expected_status_code: Option<i32>,
     pub headers: Option<JsonValue>,
     pub body: Option<String>,
-    pub dns_query_type: Option<String>,
+    pub dns_query_type: Option<DnsRecordType>,
     pub dns_expected_result: Option<String>,
     pub interval_seconds: i32,
     pub timeout_seconds: i32,
@@ -47,14 +69,14 @@ pub struct CreateMonitorRequest {
     pub port: Option<i32>,
 
     // HTTP Options
-    pub http_method: Option<String>,
+    pub http_method: Option<HttpMethod>,
     pub expected_status_code: Option<i32>,
     pub headers: Option<JsonValue>,
     pub body: Option<String>,
 
     // DNS Options
-    pub dns_query_type: Option<String>,      // e.g. "A", "MX", "TXT"
-    pub dns_expected_result: Option<String>, // Expected resolved IP/record
+    pub dns_query_type: Option<DnsRecordType>, // e.g. A, MX, TXT
+    pub dns_expected_result: Option<String>,   // Expected resolved IP/record
 
     // Timing Options (defaults set in Axum handler if omitted)
     pub interval_seconds: Option<i32>,
@@ -69,11 +91,11 @@ pub struct UpdateMonitorRequest {
     pub r#type: Option<MonitorType>,
     pub target: Option<String>,
     pub port: Option<i32>,
-    pub http_method: Option<String>,
+    pub http_method: Option<HttpMethod>,
     pub expected_status_code: Option<i32>,
     pub headers: Option<JsonValue>,
     pub body: Option<String>,
-    pub dns_query_type: Option<String>,
+    pub dns_query_type: Option<DnsRecordType>,
     pub dns_expected_result: Option<String>,
     pub interval_seconds: Option<i32>,
     pub timeout_seconds: Option<i32>,
